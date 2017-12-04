@@ -1,5 +1,6 @@
 library(tidyverse)
 library(ggmap)
+library(stringr)
 
 axio <- read_csv("Axio Data.csv", col_types = cols(.default = "c"))
 
@@ -13,6 +14,8 @@ axio <- axio %>%
                `Year Built` = as.numeric(`Year Built`),
                Level = as.numeric(Level),
                Units = as.numeric(Units))
+
+names(axio) <- str_replace_all(names(axio), pattern = " ", replacement = "_")
 
 
 my_location <- c(lon = mean(axio$lon), lat = mean(axio$lat))
@@ -35,10 +38,17 @@ ggmap(my_map_2, extent = "device",
                           aes(x = lon, y = lat, 
                               color = Submkt,
                               size = Units))) +
+  geom_point(alpha = 0.5)
+
+
+
+
+
+ggmap(my_map_2, extent = "device", 
+      base_layer = ggplot(data = axio, 
+                          aes(x = lon, y = lat, 
+                              color = Pipeline_Stage))) +
   geom_point(size = 3, alpha = 0.5)
-
-
-
 
 
 
